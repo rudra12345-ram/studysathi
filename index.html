@@ -182,7 +182,7 @@ footer p { color: #d6e2f4; font-size: 13px; }
 </footer>
 
 <script>
-const materials = [
+let materials = [];
   
   {
     title: "fllod geography",
@@ -266,7 +266,21 @@ renderMaterials();
     SUPABASE_PUBLISHABLE_KEY
   );
 
-  async function loadStudyMaterials() {
+  async function async function loadStudyMaterials() {
+  const { data, error } = await supabaseClient
+    .from("materials")
+    .select("*")
+    .order("id", { ascending: true });
+
+  if (error) {
+    console.error("Could not load materials:", error);
+    return;
+  }
+
+  materials = data;
+
+  displayMaterials();
+} {
     const { data, error } = await supabaseClient
       .from("materials")
       .select("*")
