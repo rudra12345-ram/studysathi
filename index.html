@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudySathi | Geography Learning</title>
+<style>
+:root {
+  --navy: #16324f;
+  --blue: #2457c5;
+  --cream: #f6f8fc;
+  --green: #168568;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #203047;
+  background: var(--cream);
+}
+header {
+  background: white;
+  padding: 17px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e5eaf2;
+}
+.logo { font-size: 25px; font-weight: 800; color: var(--navy); }
+.logo span { color: var(--green); }
+header a { color: var(--navy); text-decoration: none; font-weight: bold; }
+.hero {
+  padding: 62px 7%;
+  color: white;
+  background: linear-gradient(120deg, #16324f, #2457c5);
+}
+.hero .tag {
+  color: #d8f9e9;
+  font-size: 13px;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+.hero h1 { font-size: clamp(32px, 5vw, 52px); margin: 14px 0; }
+.hero p { max-width: 570px; line-height: 1.7; color: #e8efff; }
+.button {
+  display: inline-block;
+  background: #e2f7ed;
+  color: #145c48;
+  padding: 13px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+}
+main { max-width: 1120px; margin: auto; padding: 36px 20px; }
+h2 { color: var(--navy); }
+.intro { color: #627087; line-height: 1.6; }
+.filters {
+  display: flex; gap: 10px; flex-wrap: wrap; margin: 22px 0;
+}
+input, select {
+  padding: 12px;
+  border: 1px solid #d6deea;
+  border-radius: 8px;
+  background: white;
+  font-size: 15px;
+}
+input { flex: 1; min-width: 190px; }
+select { min-width: 145px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+  gap: 18px;
+}
+.card {
+  background: white;
+  border: 1px solid #e5eaf2;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 15px #20304708;
+}
+.book-icon {
+  font-size: 30px;
+  background: #edf3ff;
+  border-radius: 10px;
+  width: 54px; height: 54px;
+  display: grid; place-items: center;
+}
+.badge {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 5px 9px;
+  background: #e7f7ef;
+  color: #17684e;
+  border-radius: 20px;
+  font-size: 12px;
+}
+.card h3 { color: var(--navy); margin-bottom: 8px; }
+.card p { color: #64748b; font-size: 14px; line-height: 1.5; }
+.card-bottom {
+  display: flex; justify-content: space-between;
+  align-items: center; gap: 8px; margin-top: 18px;
+}
+.price { font-weight: bold; font-size: 20px; }
+.small-button {
+  border: 0; border-radius: 7px; padding: 10px 12px;
+  background: var(--blue); color: white; cursor: pointer;
+}
+.notice {
+  background: #fff8e8; border: 1px solid #f2dfad;
+  color: #73551a; border-radius: 10px;
+  padding: 14px; margin-top: 25px; line-height: 1.5;
+  font-size: 13px;
+}
+footer {
+  background: var(--navy); color: white;
+  text-align: center; padding: 27px 15px; margin-top: 25px;
+}
+footer p { color: #d6e2f4; font-size: 13px; }
+.empty { padding: 30px; color: #64748b; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Study<span>Sathi</span> 📚</div>
+  <a href="#materials">Explore Materials ↓</a>
+</header>
+
+<section class="hero">
+  <div class="tag">YOUR GEOGRAPHY LEARNING COMPANION</div>
+  <h1>Learn Geography.<br>Build Your Future.</h1>
+  <p>
+    Explore organised study materials for BA and MA Geography.
+    Prepare for your semester examinations with focused notes
+    and learning resources.
+  </p>
+  <a class="button" href="#materials">Explore Study Materials</a>
+</section>
+
+<main id="materials">
+  <h2>Explore Study Materials</h2>
+  <p class="intro">
+    Find learning resources by course, semester, and subject.
+  </p>
+
+  <div class="filters">
+    <input id="search" type="search"
+      placeholder="Search subject or material...">
+    <select id="course">
+      <option value="">All courses</option>
+      <option value="BA">BA Geography</option>
+      <option value="MA">MA Geography</option>
+    </select>
+    <select id="semester">
+      <option value="">All semesters</option>
+      <option value="1">Semester 1</option>
+      <option value="2">Semester 2</option>
+      <option value="3">Semester 3</option>
+      <option value="4">Semester 4</option>
+      <option value="5">Semester 5</option>
+      <option value="6">Semester 6</option>
+    </select>
+  </div>
+
+  <div class="grid" id="catalogue"></div>
+
+  <div class="notice">
+    <strong>Prototype notice:</strong> The materials shown here
+    are sample listings. Prices are illustrative. No payment is
+    collected on this website yet, and purchasing is not enabled.
+  </div>
+</main>
+
+<footer>
+  <strong>StudySathi</strong>
+  <p>Geography learning resources for students.</p>
+  <p>Contact: Add your official support email before launch.</p>
+</footer>
+
+<script>
+const materials = [
+  
+  {
+    title: "fllod geography",
+    course: "MA",
+    semester: "1",
+    subject: "Flood Geography",
+    language: "Hindi",
+    price: 99
+  },
+  {
+    title: "cartography 1",
+    course: "MA",
+    semester: "2",
+    subject: "Cartography",
+    language: "Hindi",
+    price: 99
+  },
+  {
+    title: "stats",
+    course: "BA",
+    semester: "1",
+    subject: "Geographical Statistics",
+    language: "Hindi",
+    price: 49
+  }
+];
+
+function renderMaterials() {
+  const query = document.getElementById("search").value.toLowerCase();
+  const course = document.getElementById("course").value;
+  const semester = document.getElementById("semester").value;
+
+  const results = materials.filter(item =>
+    (item.title + " " + item.subject + " " + item.language)
+      .toLowerCase().includes(query) &&
+    (!course || item.course === course) &&
+    (!semester || item.semester === semester)
+  );
+
+  const catalogue = document.getElementById("catalogue");
+
+  if (!results.length) {
+    catalogue.innerHTML = '<div class="empty">No matching materials found.</div>';
+    return;
+  }
+
+  catalogue.innerHTML = results.map(item => `
+    <article class="card">
+      <div class="book-icon">📘</div>
+      <span class="badge">${item.course} Geography · Semester ${item.semester}</span>
+      <h3>${item.title}</h3>
+      <p>${item.subject}<br>Language: ${item.language}</p>
+      <div class="card-bottom">
+        <span class="price">₹${item.price}</span>
+        <button class="small-button" onclick="showInfo()">
+          View Details
+        </button>
+      </div>
+    </article>
+  `).join("");
+}
+
+function showInfo() {
+  alert("This is a website preview. Student login and secure purchasing will be added in a later step.");
+}
+
+document.getElementById("search").addEventListener("input", renderMaterials);
+document.getElementById("course").addEventListener("change", renderMaterials);
+document.getElementById("semester").addEventListener("change", renderMaterials);
+
+renderMaterials();
+</script>
+</body>
+</html>
