@@ -257,3 +257,28 @@ renderMaterials();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> </body>
 </html>
+<script>
+  const SUPABASE_URL = "https://pkdtpmwmczvgoopuibvh.supabase.co/rest/v1/";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_6-vo-OSU-Sp9KD6cnIC4mg_AeS1zC1i";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  async function loadStudyMaterials() {
+    const { data, error } = await supabaseClient
+      .from("materials")
+      .select("*")
+      .order("id", { ascending: true });
+
+    if (error) {
+      console.error("Could not load study materials:", error.message);
+      return;
+    }
+
+    console.log("StudySathi materials loaded:", data);
+  }
+
+  loadStudyMaterials();
+</script>
