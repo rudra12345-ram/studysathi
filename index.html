@@ -230,7 +230,18 @@ footer p {
 
 <header>
   <div class="logo">Study<span>Sathi</span> 📚</div>
-  <a href="#materials">Explore Materials ↓</a>
+
+  <div style="display:flex; gap:15px; align-items:center;">
+    <a href="#materials">Explore Materials ↓</a>
+
+    <button
+      id="authButton"
+      class="small-button"
+      onclick="openAuth()"
+    >
+      Student Login
+    </button>
+  </div>
 </header>
 
 <section class="hero">
@@ -322,7 +333,114 @@ footer p {
   </div>
 
 </main>
+<!-- LOGIN / SIGN UP WINDOW -->
 
+<div
+  id="authModal"
+  style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.55);
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  "
+>
+
+  <div
+    style="
+      background:white;
+      width:100%;
+      max-width:420px;
+      border-radius:15px;
+      padding:28px;
+      box-shadow:0 10px 40px rgba(0,0,0,0.2);
+    "
+  >
+
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+
+      <h2 id="authTitle" style="margin-top:0;">
+        Student Login
+      </h2>
+
+      <button
+        onclick="closeAuth()"
+        style="
+          border:0;
+          background:none;
+          font-size:25px;
+          cursor:pointer;
+        "
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <input
+      id="authEmail"
+      type="email"
+      placeholder="Email address"
+      style="width:100%;margin-bottom:12px;"
+    >
+
+
+    <input
+      id="authPassword"
+      type="password"
+      placeholder="Password"
+      style="width:100%;margin-bottom:15px;"
+    >
+
+
+    <button
+      id="authSubmit"
+      class="small-button"
+      style="width:100%;"
+      onclick="handleAuth()"
+    >
+      Login
+    </button>
+
+
+    <p
+      id="authMessage"
+      style="
+        font-size:14px;
+        margin-top:15px;
+      "
+    ></p>
+
+
+    <p style="font-size:14px;text-align:center;">
+
+      <span id="authSwitchText">
+        Don't have an account?
+      </span>
+
+      <button
+        id="authSwitch"
+        onclick="toggleAuthMode()"
+        style="
+          border:0;
+          background:none;
+          color:#2457c5;
+          font-weight:bold;
+          cursor:pointer;
+        "
+      >
+        Sign Up
+      </button>
+
+    </p>
+
+  </div>
+
+</div>
 <footer>
 
   <strong>StudySathi</strong>
@@ -558,7 +676,242 @@ document
 -------------------------------- */
 
 loadStudyMaterials();
+/* --------------------------------
+   AUTHENTICATION
+-------------------------------- */
 
+let isSignUpMode = false;
+
+
+/* Open login window */
+
+function openAuth() {
+
+  document.getElementById("authModal").style.display = "flex";
+
+  updateAuthInterface();
+
+}
+
+
+/* Close login window */
+
+function closeAuth() {
+
+  document.getElementById("authModal").style.display = "none";
+
+}
+
+
+/* Switch between Login and Sign Up */
+
+function toggleAuthMode() {
+
+  isSignUpMode = !isSignUpMode;
+
+  updateAuthInterface();
+
+}
+
+
+/* Update text */
+
+function updateAuthInterface() {
+
+  const title =
+    document.getElementById("authTitle");
+
+  const submit =
+    document.getElementById("authSubmit");
+
+  const switchText =
+    document.getElementById("authSwitchText");
+
+  const switchButton =
+    document.getElementById("authSwitch");
+
+
+  if (isSignUpMode) {
+
+    title.textContent = "Create Student Account";
+
+    submit.textContent = "Sign Up";
+
+    switchText.textContent =
+      "Already have an account?";
+
+    switchButton.textContent =
+      "Login";
+
+  } else {
+
+    title.textContent = "Student Login";
+
+    submit.textContent = "Login";
+
+    switchText.textContent =
+      "Don't have an account?";
+
+    switchButton.textContent =
+      "Sign Up";
+
+  }
+
+}
+
+
+/* Login / Sign Up */
+
+async function handleAuth() {
+
+  const email =
+    document.getElementById("authEmail").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value;
+
+  const message =
+    document.getElementById("authMessage");
+
+
+  message.textContent = "";
+
+
+  if (!email || !password) {
+
+    message.textContent =
+      "Please enter your email and password.";
+
+    return;
+
+  }
+
+
+  if (password.length < 6) {
+
+    message.textContent =
+      "Password must contain at least 6 characters.";
+
+    return;
+
+  }
+
+
+  /* SIGN UP */
+
+  if (isSignUpMode) {
+
+    const { data, error } =
+      await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+      });
+
+
+    if (error) {
+
+      console.error(error);
+
+      message.textContent =
+        error.message;
+
+      return;
+
+    }
+
+
+    message.textContent =
+      "Account created. Please check your email to verify your account.";
+
+    return;
+
+  }
+
+
+  /* LOGIN */
+
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+
+  if (error) {
+
+    console.error(error);
+
+    message.textContent =
+      error.message;
+
+    return;
+
+  }
+
+
+  message.textContent =
+    "Login successful!";
+
+  updateAuthButton(data.user);
+
+  setTimeout(closeAuth, 800);
+
+}
+
+
+/* Update header button */
+
+function updateAuthButton(user) {
+
+  const button =
+    document.getElementById("authButton");
+
+
+  if (user) {
+
+    button.textContent = "Logout";
+
+    button.onclick = logoutStudent;
+
+  } else {
+
+    button.textContent = "Student Login";
+
+    button.onclick = openAuth;
+
+  }
+
+}
+
+
+/* Logout */
+
+async function logoutStudent() {
+
+  await supabaseClient.auth.signOut();
+
+  updateAuthButton(null);
+
+}
+
+
+/* Check existing login */
+
+async function checkStudentLogin() {
+
+  const {
+    data: { user }
+  } =
+    await supabaseClient.auth.getUser();
+
+  updateAuthButton(user);
+
+}
+
+
+/* Start authentication */
+
+checkStudentLogin();
 </script>
 
 </body>
