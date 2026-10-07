@@ -612,7 +612,7 @@ function renderMaterials() {
 
           <button
             class="small-button"
-            onclick="showInfo()"
+            onclick="openMaterial(this)"
           >
             View Details
           </button>
@@ -630,12 +630,30 @@ function renderMaterials() {
    VIEW DETAILS
 -------------------------------- */
 
-function showInfo() {
+async function openMaterial(button) {
 
-  alert(
-    "Student login and secure purchasing will be added in the next step."
+  const card = button.closest(".card");
+
+  const material = materials.find(item =>
+    card.querySelector("h3").textContent.trim() === item.title
   );
 
+  if (!material) {
+    alert("Material not found.");
+    return;
+  }
+
+  const {
+    data: { user }
+  } = await supabaseClient.auth.getUser();
+
+  if (!user) {
+    alert("Please login first.");
+    openAuth();
+    return;
+  }
+
+  alert("Secure PDF access will be connected after payment setup.");
 }
 
 
