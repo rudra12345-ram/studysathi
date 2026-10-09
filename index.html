@@ -625,10 +625,19 @@ function renderMaterials() {
 
 
 /* --------------------------------
-   VIEW DETAILS
--------------------------------- */
+  
+/* VIEW DETAILS */
 
 async function openMaterial(button) {
+  const card = button.closest(".card");
+  const title = card.querySelector("h3").textContent.trim();
+
+  alert(
+    "You selected: " + title +
+    "\nOnline reading and secure access will be connected after payment setup."
+  );
+}
+
  
 
 /* --------------------------------
