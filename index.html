@@ -628,15 +628,23 @@ function renderMaterials() {
   
 /* VIEW DETAILS */
 
+
 async function openMaterial(button) {
   const card = button.closest(".card");
   const title = card.querySelector("h3").textContent.trim();
 
+  const priceText = card.querySelector(".price")?.textContent || "";
+  const priceMatch = priceText.match(/[0-9]+(?:\.[0-9]+)?/);
+  const price = priceMatch ? priceMatch[0] : "";
+
   alert(
-    "You selected: " + title +
-    "\nOnline reading and secure access will be connected after payment setup."
+    "StudySathi UPI Payment\n\n" +
+    "Material: " + title + "\n" +
+    "Price: " + (price ? "₹" + price : "Please check the listed price") +
+    "\n\nUPI payment setup is in progress. No payment has been taken."
   );
 }
+
 /* --------------------------------
    FILTER EVENTS
 -------------------------------- */
