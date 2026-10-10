@@ -528,13 +528,17 @@ async function loadStudyMaterials() {
 
 function renderMaterials() {
 
-  const query =
-    document
-      .getElementById("search")
-      .value
-      .toLowerCase()
-      .trim();
+ let query =
+  document
+    .getElementById("search")
+    .value
+    .toLowerCase()
+    .trim();
 
+if (query.includes("@")) {
+  query = "";
+  document.getElementById("search").value = "";
+}
 
   const course =
     document.getElementById("course").value;
