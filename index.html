@@ -561,7 +561,7 @@ function renderMaterials() {
 
       &&
 
-      (!semester || item.semester === semester)
+     (!semester || String(item.semester) === semester)
 
     );
 
@@ -605,7 +605,7 @@ function renderMaterials() {
         <div class="card-bottom">
 
           <span class="price">
-            ₹${item.price_inr}
+           ₹${item.price_inr ?? item.price ?? 0}
           </span>
 
           <button
