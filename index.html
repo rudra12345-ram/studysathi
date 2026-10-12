@@ -743,13 +743,13 @@ document.getElementById("upiPaymentForm").addEventListener("submit", async funct
     return;
   }
 
-  if (!window.supabaseClient) {
+  if (!supabaseClient) {
     message.textContent = "Connection problem. Please try again later.";
     return;
   }
 
   const { data: { user }, error: userError } =
-    await window.supabaseClient.auth.getUser();
+    await supabaseClient.auth.getUser();
 
   if (userError || !user) {
     message.textContent = "Please log in before submitting payment.";
@@ -768,7 +768,7 @@ document.getElementById("upiPaymentForm").addEventListener("submit", async funct
 
   message.textContent = "Submitting request...";
 
-  const { error } = await window.supabaseClient
+  const { error } = await supabaseClient
     .from("payment_requests")
     .insert({
       user_id: user.id,
