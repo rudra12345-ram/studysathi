@@ -371,8 +371,29 @@ footer p {
     >
 
     <p>
-      After paying, keep your UPI transaction reference
-      for payment verification.
+      
+<p>
+  After paying, enter your UPI transaction reference below.
+  Your purchase will remain pending until payment is verified.
+</p>
+
+<form id="upiPaymentForm">
+  <input
+    id="upiTransactionRef"
+    type="text"
+    placeholder="UPI transaction reference / UTR"
+    autocomplete="off"
+    required
+    style="width:100%;margin-bottom:12px;"
+  >
+
+  <button type="submit" class="small-button" style="width:100%;">
+    Submit Payment Reference
+  </button>
+
+  <p id="upiPaymentMessage" aria-live="polite"></p>
+</form>
+
     </p>
 
     <button
