@@ -731,7 +731,62 @@ function openMaterial(button) {
 
 function closePayment() {
   document.getElementById("paymentModal").style.display = "none";
-}
+} 
+document.getElementById("upiPaymentForm").addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const message = document.getElementById("upiPaymentMessage");
+  const transactionRef = document.getElementById("upiTransactionRef").value.trim();
+
+  if (!transactionRef) {
+    message.textContent = "Please enter your transaction reference.";
+    return;
+  }
+
+  if (!window.supabaseClient) {
+    message.textContent = "Connection problem. Please try again later.";
+    return;
+  }
+
+  const { data: { user }, error: userError } =
+    await window.supabaseClient.auth.getUser();
+
+  if (userError || !user) {
+    message.textContent = "Please log in before submitting payment.";
+    return;
+  }
+
+  const material = document.getElementById("paymentMaterial").textContent;
+  const priceText = document.getElementById("paymentPrice").textContent;
+  const title = material.replace("Material:", "").trim();
+  const amount = Number(priceText.replace(/[^0-9.]/g, ""));
+
+  if (!title || !Number.isFinite(amount) || amount <= 0) {
+    message.textContent = "Material or price could not be identified.";
+    return;
+  }
+
+  message.textContent = "Submitting request...";
+
+  const { error } = await window.supabaseClient
+    .from("payment_requests")
+    .insert({
+      user_id: user.id,
+      material_title: title,
+      amount_inr: amount,
+      transaction_ref: transactionRef
+    });
+
+  if (error) {
+    console.error("Payment request error:", error);
+    message.textContent = "Could not submit. Please check your login and try again.";
+    return;
+  }
+
+  message.textContent = "Reference submitted. Payment is pending verification.";
+  document.getElementById("upiTransactionRef").value = "";
+});
+
 
 
 /* --------------------------------
