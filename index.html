@@ -690,21 +690,28 @@ if (query.includes("@")) {
 /* VIEW DETAILS */
 
 
-async function openMaterial(button) {
+
+function openMaterial(button) {
   const card = button.closest(".card");
   const title = card.querySelector("h3").textContent.trim();
 
   const priceText = card.querySelector(".price")?.textContent || "";
   const priceMatch = priceText.match(/[0-9]+(?:\.[0-9]+)?/);
-  const price = priceMatch ? priceMatch[0] : "";
+  const price = priceMatch ? priceMatch[0] : "0";
 
-  alert(
-    "StudySathi UPI Payment\n\n" +
-    "Material: " + title + "\n" +
-    "Price: " + (price ? "₹" + price : "Please check the listed price") +
-    "\n\nUPI payment setup is in progress. No payment has been taken."
-  );
+  document.getElementById("paymentMaterial").textContent =
+    "Material: " + title;
+
+  document.getElementById("paymentPrice").textContent =
+    "Price: ₹" + price;
+
+  document.getElementById("paymentModal").style.display = "flex";
 }
+
+function closePayment() {
+  document.getElementById("paymentModal").style.display = "none";
+}
+
 
 /* --------------------------------
    FILTER EVENTS
