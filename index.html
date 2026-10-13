@@ -940,7 +940,34 @@ async function handleAuth() {
 
   }
 
+async function resetStudySathiPassword() {
+  const email = document.getElementById("authEmail").value.trim();
+  const message = document.getElementById("authMessage");
 
+  if (!email) {
+    message.textContent = "Please enter your email address first.";
+    return;
+  }
+
+  if (!supabaseClient) {
+    message.textContent = "Connection problem. Please try again later.";
+    return;
+  }
+
+  message.textContent = "Sending password-reset email...";
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin
+  });
+
+  if (error) {
+    message.textContent = "Could not send reset email. Please check your email and try again.";
+    console.error("Password reset error:", error);
+    return;
+  }
+
+  message.textContent = "If this email is registered, check your inbox for the password-reset link.";
+}
   if (password.length < 6) {
 
     message.textContent =
