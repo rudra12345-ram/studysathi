@@ -1148,6 +1148,160 @@ checkStudentLogin();
 
   message.textContent = "Check your email for the password-reset link.";
 };
+  
+async function loadStudySathiPendingPayments() {
+  const message = document.getElementById("adminPaymentMessage");
+  const list = document.getElementById("adminPaymentList");
+
+  message.textContent = "Loading pending payments...";
+  list.replaceChildren();
+
+  try {
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error || !data.session) {
+      message.textContent = "Please log in first.";
+      return;
+    }
+
+    const response = await fetch(
+      SUPABASE_URL + "/functions/v1/approve-payment",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_PUBLISHABLE_KEY,
+          "Authorization": "Bearer " + data.session.access_token
+        },
+        body: JSON.stringify({ action: "list_pending" })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      message.textContent = result.error || "Could not load requests.";
+      return;
+    }
+
+    if (!result.requests || result.requests.length === 0) {
+      message.textContent = "No pending payment requests.";
+      return;
+    }
+
+    message.textContent =
+      "Pending requests: " + result.requests.length;
+
+    result.requests.forEach(function (request) {
+      const card = document.createElement("div");
+      card.style.cssText =
+        "border:1px solid #ccc;padding:12px;margin:10px 0;border-radius:8px";
+
+      const details = document.createElement("p");
+      details.textContent =
+        "Material: " + request.material_title +
+        " | Amount: ₹" + request.amount_inr +
+        " | UPI reference: " + request.transaction_ref +
+        " | Request ID: " + request.id;
+
+      const approve = document.createElement("button");
+      approve.textContent = "Approve after payment verification";
+
+      approve.onclick = async function () {
+        const confirmed = window.confirm(
+          "Have you verified that this exact UPI payment was received in your bank or UPI app? Approve only if confirmed."
+        );
+
+        if (!confirmed) return;
+
+        approve.disabled = true;
+        message.textContent = "Processing approval...";
+
+        try {
+          const { data: sessionData, error: sessionError } =
+            await supabaseClient.auth.getSession();
+
+          if (sessionError || !sessionData.session) {
+            message.textContent = "Please log in again.";
+            approve.disabled = false;
+            return;
+          }
+
+          const approvalResponse = await fetch(
+            SUPABASE_URL + "/functions/v1/approve-payment",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "apikey": SUPABASE_PUBLISHABLE_KEY,
+                "Authorization":
+                  "Bearer " + sessionData.session.access_token
+              },
+              body: JSON.stringify({ request_id: request.id })
+            }
+          );
+
+          const approvalResult = await approvalResponse.json();
+
+          if (!approvalResponse.ok) {
+            message.textContent =
+              approvalResult.error || "Approval failed.";
+            approve.disabled = false;
+            return;
+          }
+
+          message.textContent =
+            approvalResult.message || "Payment request approved.";
+
+          await loadStudySathiPendingPayments();
+        } catch (error) {
+          console.error(error);
+          message.textContent = "Network error. Please try again.";
+          approve.disabled = false;
+        }
+      };
+
+      card.appendChild(details);
+      card.appendChild(approve);
+      list.appendChild(card);
+    });
+  } catch (error) {
+    console.error(error);
+    message.textContent = "Could not connect. Please try again.";
+  }
+}
+
+const adminPaymentPanel = document.createElement("section");
+adminPaymentPanel.style.cssText =
+  "max-width:900px;margin:30px auto;padding:16px;border:1px solid #ddd;border-radius:12px";
+
+const adminPaymentHeading = document.createElement("h2");
+adminPaymentHeading.textContent = "Admin: UPI Payment Requests";
+
+const adminPaymentHelp = document.createElement("p");
+adminPaymentHelp.textContent =
+  "Check each payment in your UPI app before approving.";
+
+const adminPaymentButton = document.createElement("button");
+adminPaymentButton.textContent = "Load Pending Payments";
+adminPaymentButton.onclick = loadStudySathiPendingPayments;
+
+const adminPaymentMessage = document.createElement("p");
+adminPaymentMessage.id = "adminPaymentMessage";
+
+const adminPaymentList = document.createElement("div");
+adminPaymentList.id = "adminPaymentList";
+
+adminPaymentPanel.append(
+  adminPaymentHeading,
+  adminPaymentHelp,
+  adminPaymentButton,
+  adminPaymentMessage,
+  adminPaymentList
+);
+
+document.body.appendChild(adminPaymentPanel);
+
 </script>
 
 </body>
