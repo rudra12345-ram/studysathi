@@ -770,7 +770,7 @@ async function showMaterialDetails(button) {
 
     const { data, error } = await supabaseClient
       .storage
-      .from("study pdf")
+      .from("study-previews")
       .createSignedUrl(material.preview_path, 300);
 
     if (error || !data?.signedUrl) {
