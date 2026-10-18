@@ -743,14 +743,46 @@ function openMaterial(button) {
 
   document.getElementById("paymentModal").style.display = "flex";
 }
-function showMaterialDetails(button) {
+async function showMaterialDetails(button) {
   const card = button.closest(".card");
   const title = card.querySelector("h3").textContent.trim();
 
-  alert(
-    "Study Material: " + title +
-    "\n\nPDF reading will be connected in the next step."
-  );
+  const previewTab = window.open("about:blank", "_blank");
+
+  if (!previewTab) {
+    alert("Please allow pop-ups for StudySathi.");
+    return;
+  }
+
+  previewTab.document.write("Loading preview...");
+
+  try {
+    const { data: material, error: materialError } =
+      await supabaseClient
+        .from("materials")
+        .select("preview_path")
+        .eq("title", title)
+        .single();
+
+    if (materialError || !material?.preview_path) {
+      throw new Error("Preview not found for this material.");
+    }
+
+    const { data, error } = await supabaseClient
+      .storage
+      .from("study pdf")
+      .createSignedUrl(material.preview_path, 300);
+
+    if (error || !data?.signedUrl) {
+      throw new Error("Could not open the preview.");
+    }
+
+    previewTab.location.href = data.signedUrl;
+  } catch (error) {
+    previewTab.close();
+    alert(error.message || "Unable to open preview.");
+  }
+}
 }
 function closePayment() {
   document.getElementById("paymentModal").style.display = "none";
